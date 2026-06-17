@@ -11,9 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- React, ReactDOM & Babel for in-browser JSX compilation -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.4/babel.min.js"></script>
 
   <!-- PDF.js & Mammoth.js for client-side PDF and DOCX text extraction -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -2024,12 +2024,17 @@
       const [tasks, setTasks] = React.useState(DEFAULT_TASKS);
 
       React.useEffect(() => {
-        const u = localStorage.getItem('omnistudy_user');
-        const k = localStorage.getItem('omnistudy_gemini_key');
-        const t = localStorage.getItem('omnistudy_tasks');
-        if (u) setUser(JSON.parse(u));
-        if (k) setApiKey(k);
-        if (t) setTasks(JSON.parse(t));
+        try {
+          const u = localStorage.getItem('omnistudy_user');
+          const k = localStorage.getItem('omnistudy_gemini_key');
+          const t = localStorage.getItem('omnistudy_tasks');
+          if (u && u !== 'undefined') setUser(JSON.parse(u));
+          if (k) setApiKey(k);
+          if (t && t !== 'undefined') setTasks(JSON.parse(t));
+        } catch (e) {
+          console.error("Error reading localStorage", e);
+          localStorage.clear();
+        }
       }, []);
 
       const handleLogin = (userData) => {
